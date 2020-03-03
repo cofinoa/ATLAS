@@ -65,7 +65,7 @@ while [ $pending -gt 0 ]; do
 	url="${base_url}&fields=${fields}&${query}&limit=${limit}&offset=${current}"
 
 	print_err "Pending: ${pending}, i=${i}, URL=${url}"
-	curl -s "$url" | jq '.response.docs|.[]'
+	curl -s "$url" | jq '.response.docs | .[] | with_entries( .value = if .value|type == "array" then .value[0] else .value end )'
 	
 	pending=$(expr $pending - $limit)
 	let i=i+1
